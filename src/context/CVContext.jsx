@@ -49,6 +49,16 @@ export function CVProvider({ children }) {
   const [cvData, setCVData] = useState(saved || defaultCV);
   const [uploadedFile, setUploadedFile] = useState(saved?.__uploadedFile || null);
 
+  // Load from backend on mount (overrides localStorage)
+  useEffect(() => {
+    fetch('/api/save-cv').then(r => r.json()).then(data => {
+      if (data?.cvData) {
+        setCVData(data.cvData);
+        if (data.uploadedFile) setUploadedFile(data.uploadedFile);
+      }
+    }).catch(() => {});
+  }, []);
+
   // Auto-save to localStorage on every change
   useEffect(() => {
     try {

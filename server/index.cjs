@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const { initDB, saveCV, loadCV } = require('./db.cjs');
 
 const app = express();
 const PORT = 3001;
@@ -17,6 +18,9 @@ const cacheDir = path.join(analysisDir, 'cache');
 fs.mkdirSync(uploadsDir, { recursive: true });
 fs.mkdirSync(analysisDir, { recursive: true });
 fs.mkdirSync(cacheDir, { recursive: true });
+
+// Initialize database
+initDB().catch(err => console.error('DB init failed:', err.message));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
@@ -88,19 +92,22 @@ app.post('/api/save-analysis', (req, res) => {
   res.json({ success: true, cached: !!hash });
 });
 
-app.post('/api/save-cv', (req, res) => {
-  const cvPath = path.join(analysisDir, 'cv-save.json');
-  fs.writeFileSync(cvPath, JSON.stringify(req.body, null, 2));
-  res.json({ success: true });
+app.post('/api/save-cv', async (req, res) => {
+  try {
+    await saveCV('main', req.body);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-app.get('/api/save-cv', (req, res) => {
-  const cvPath = path.join(analysisDir, 'cv-save.json');
-  if (fs.existsSync(cvPath)) {
-    const data = JSON.parse(fs.readFileSync(cvPath, 'utf-8'));
-    return res.json(data);
+app.get('/api/save-cv', async (req, res) => {
+  try {
+    const data = await loadCV('main');
+    res.json(data || {});
+  } catch (err) {
+    res.status(500).json({});
   }
-  res.json({});
 });
 
 app.post('/api/verify-hash', (req, res) => {

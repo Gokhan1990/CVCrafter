@@ -5,3 +5,26 @@ services:
     ports:
       - "8080:80"
     restart: unless-stopped
+    depends_on:
+      cv-db:
+        condition: service_healthy
+
+  cv-db:
+    image: postgres:16-alpine
+    container_name: cv-postgres
+    environment:
+      POSTGRES_USER: cvuser
+      POSTGRES_PASSWORD: cvpass
+      POSTGRES_DB: cvapp
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cvuser -d cvapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
