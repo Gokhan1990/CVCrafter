@@ -306,6 +306,9 @@ export default function CVImport({ onNavigate }) {
             <button className="btnExport" onClick={applyToForm} style={{ flex: 1 }}>
               Veriyi Şablona Uygula
             </button>
+            <button className="btnExport" onClick={() => { setStep('upload'); setFile(null); setAnalysis(null); }} style={{ flex: 1, background: '#dc2626' }}>
+              Yeni CV Yükle
+            </button>
             {onNavigate && (
               <button className="btnExport" onClick={() => onNavigate('settings')} style={{ flex: 1, background: '#7c3aed' }}>
                 Tüm Şablonları Gör
