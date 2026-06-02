@@ -40,10 +40,17 @@ export default function AppLayout() {
   const [showPdf, setShowPdf] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     if (uploadedFile) setShowPdf(true);
   }, [uploadedFile]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const ActiveComp = sections.find(s => s.id === activeSection)?.comp || CVImport;
   const PreviewTemplate = templates[cvData.template] || ModernTemplate;
@@ -61,8 +68,8 @@ export default function AppLayout() {
   const handleSave = async () => {
     setSaving(true);
     const ok = await saveCV();
-    if (ok) setSaving(false);
-    else { setSaving(false); alert('Kaydetme başarısız'); }
+    setSaving(false);
+    setToast(ok ? '✅ Kaydedildi' : '❌ Kaydetme başarısız');
   };
 
   const handleNavigate = (sectionId) => {
@@ -71,6 +78,17 @@ export default function AppLayout() {
 
   return (
     <div className="app">
+      {toast && (
+        <div style={{
+          position: 'fixed', top: 20, right: 20, zIndex: 9999,
+          background: toast.includes('✅') ? '#059669' : '#dc2626',
+          color: 'white', padding: '12px 24px', borderRadius: 8,
+          fontSize: 14, fontWeight: 600, boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          transition: 'opacity 0.3s'
+        }}>
+          {toast}
+        </div>
+      )}
       <header className="appHeader">
         <div className="appHeaderLeft">
           <h1>🧑‍💼 CV Geliştirici</h1>
