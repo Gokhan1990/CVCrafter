@@ -35,6 +35,9 @@ debug*.png
 # Analysis cache
 analysis/cache/
 analysis/result.json
+analysis/cv-save.json
+analysis/pending.txt
+analysis/last-upload.txt
 
 # Uploads
 uploads/*.pdf
