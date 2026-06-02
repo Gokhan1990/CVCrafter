@@ -1,0 +1,277 @@
+{
+  "status": "completed",
+  "score": 70,
+  "grade": "İyi",
+  "passed": 10,
+  "total": 14,
+  "summary": "Gokhan Bey, yazilim sektorunde 10+ yillik deneyime sahip guclu bir Full Stack Developer. Teknik yetenekleriniz etkileyici, ancak CV'niz ATS sistemlerinden gecmekte zorlanabilir.",
+  "advice": [
+    "Sayısal Veri Ekleyin: \"%30 iyileştirdim\", \"%50 hızlandırdım\" gibi metrikler 2x daha fazla geri dönüş alır.",
+    "STAR Yöntemi Kullanın: Deneyimleri Durum-Görev-Aksiyon-Sonuç formatında yazın.",
+    "Sertifika Ekleyin: AWS, Azure, Scrum veya alanınızla ilgili sertifikaları ekleyin.",
+    "LinkedIn ve GitHub profillerinizi güncel tutun."
+  ],
+  "failed": [
+    {
+      "label": "Sayısal veri / metrik",
+      "weight": 8,
+      "tip": "'Performansı artırdım' yerine '%30 iyileştirdim' yazın."
+    },
+    {
+      "label": "STAR yöntemi",
+      "weight": 8,
+      "tip": "Deneyimleri Durum-Görev-Aksiyon-Sonuç formatında yazın."
+    },
+    {
+      "label": "Sertifika",
+      "weight": 5,
+      "tip": "AWS, Azure veya alan sertifikalarınızı ekleyin."
+    },
+    {
+      "label": "İngilizce seviyesi netleştirme",
+      "weight": 2,
+      "tip": "IELTS/TOEFL skoru veya C1/C2 seviyesi yazılabilir."
+    }
+  ],
+  "templateRec": {
+    "id": "modern",
+    "icon": "Modern",
+    "name": "Modern Sablon",
+    "reason": "Teknik yetenekleriniz cok genis bir yelpazede. Modern sablon idealdir.",
+    "useCase": "Teknik roller ve startup basvurulari icin ideal"
+  },
+  "parsed": {
+    "personal": {
+      "fullName": "Gökhan Taşkın",
+      "title": "Senior Full Stack Developer",
+      "email": "gokhanntaskinn@gmail.com",
+      "phone": "+90 537 214 50 80",
+      "address": "Ankara, Türkiye",
+      "linkedin": "linkedin.com/in/gokhantaskin",
+      "github": "https://github.com/Gokhan1990",
+      "portfolio": "github.com/Gokhan1990",
+      "website": "github.com/Gokhan1990"
+    },
+    "summary": "10+ yıllık deneyime sahip Senior Full Stack Developer. .NET Core, React, Node.js ve mikroservis mimarilerinde uzman. Fintech, telekom ve kurumsal projelerde scalable backend sistemleri geliştirdi.",
+    "experience": [
+      {
+        "id": 1,
+        "company": "Experilabs/CCI",
+        "position": "Senior Software Development Engineer",
+        "startDate": "2022-08",
+        "endDate": "",
+        "current": true,
+        "description": "CCI Next Middleware API ve CCINext Web (.NET Core)\nPayment API Service ve Auth API Service (.NET Core)\nOnlineOrder Service ve SmsGateway API (.NET Core)\nMsSQL, Elasticsearch, Entity Framework, Clean Architecture"
+      },
+      {
+        "id": 2,
+        "company": "Ericson/Turkcell",
+        "position": "Senior Software Development Engineer",
+        "startDate": "2021-08",
+        "endDate": "2022-08",
+        "current": false,
+        "description": "CCI Next Middleware API ve CCINext Web (.NET Core)\nMsSQL, Elasticsearch, Entity Framework"
+      },
+      {
+        "id": 3,
+        "company": "Çevre ve Şehircilik Bakanlığı",
+        "position": "Software Specialist",
+        "startDate": "2021-03",
+        "endDate": "2021-08",
+        "current": false,
+        "description": "Coğrafi İhtiyaç Matrisi (.NET Core Blazor)\nCrons Application background processes (.NET Core)\nE-Qualification, E-Permission projeleri (ASP.NET)"
+      },
+      {
+        "id": 4,
+        "company": "Advancity",
+        "position": "Software Developer",
+        "startDate": "2017-10",
+        "endDate": "2019-10",
+        "current": false,
+        "description": "ALMS - 70+ üniversite tarafından kullanılan uzaktan eğitim yazılımı (.NET MVC, Knockout, JQuery, MsSQL)\nALMS SYNC - SOAP/Rest servis entegrasyonu (ASP.NET)\nATUBE - Kurumsal video eğitim platformu (MVC, Vue.js, Kaltura, Vimeo)\nOnline Education Portal - sıfırdan geliştirildi (.NET CORE MVC)"
+      },
+      {
+        "id": 5,
+        "company": "Aytaş Mobilya",
+        "position": "Software Developer",
+        "startDate": "2015-06",
+        "endDate": "2015-10",
+        "current": false,
+        "description": "Harmony ERP adaptasyonları\nMRP modülü ara katman geliştirme\nDivanmobilya.com ve Sihirlisehpa.com web sitesi yönetimi"
+      },
+      {
+        "id": 6,
+        "company": "Voipzeker",
+        "position": "Software Developer",
+        "startDate": "2012-09",
+        "endDate": "2013-09",
+        "current": false,
+        "description": "Voipzeker.nl admin paneli geliştirme\nSharecontact.nl VoIP telefon rehberi projesi\nWeb projeleri (PHP, JavaScript)"
+      }
+    ],
+    "education": [
+      {
+        "id": 1,
+        "school": "Sakarya Universitesi",
+        "degree": "Lisans",
+        "field": "Bilgisayar Muhendisligi",
+        "startDate": "2008",
+        "endDate": "2012",
+        "gpa": ""
+      }
+    ],
+    "skills": [
+      {
+        "id": 1,
+        "name": "C#",
+        "category": "languages",
+        "level": "Uzman"
+      },
+      {
+        "id": 2,
+        "name": "JavaScript",
+        "category": "languages",
+        "level": "İleri"
+      },
+      {
+        "id": 3,
+        "name": "PHP",
+        "category": "languages",
+        "level": "Orta"
+      },
+      {
+        "id": 4,
+        "name": "ASP.NET Core",
+        "category": "frameworks",
+        "level": "Uzman"
+      },
+      {
+        "id": 5,
+        "name": "React",
+        "category": "frameworks",
+        "level": "İleri"
+      },
+      {
+        "id": 6,
+        "name": "Node.js",
+        "category": "frameworks",
+        "level": "İleri"
+      },
+      {
+        "id": 7,
+        "name": "Angular",
+        "category": "frameworks",
+        "level": "Orta"
+      },
+      {
+        "id": 8,
+        "name": "Knockout",
+        "category": "frameworks",
+        "level": "İleri"
+      },
+      {
+        "id": 9,
+        "name": "Vue.js",
+        "category": "frameworks",
+        "level": "Orta"
+      },
+      {
+        "id": 10,
+        "name": "jQuery",
+        "category": "frameworks",
+        "level": "İleri"
+      },
+      {
+        "id": 11,
+        "name": "MsSQL",
+        "category": "databases",
+        "level": "İleri"
+      },
+      {
+        "id": 12,
+        "name": "PostgreSQL",
+        "category": "databases",
+        "level": "İleri"
+      },
+      {
+        "id": 13,
+        "name": "MySQL",
+        "category": "databases",
+        "level": "İleri"
+      },
+      {
+        "id": 14,
+        "name": "MongoDB",
+        "category": "databases",
+        "level": "Orta"
+      },
+      {
+        "id": 15,
+        "name": "Elasticsearch",
+        "category": "databases",
+        "level": "İleri"
+      },
+      {
+        "id": 16,
+        "name": "Redis",
+        "category": "databases",
+        "level": "Orta"
+      },
+      {
+        "id": 17,
+        "name": "RabbitMQ",
+        "category": "databases",
+        "level": "Orta"
+      },
+      {
+        "id": 18,
+        "name": "Docker",
+        "category": "tools",
+        "level": "Orta"
+      },
+      {
+        "id": 19,
+        "name": "AWS",
+        "category": "tools",
+        "level": "Orta"
+      },
+      {
+        "id": 20,
+        "name": "Azure",
+        "category": "tools",
+        "level": "Orta"
+      },
+      {
+        "id": 21,
+        "name": "Git",
+        "category": "tools",
+        "level": "İleri"
+      },
+      {
+        "id": 22,
+        "name": "TFS CI/CD",
+        "category": "tools",
+        "level": "Orta"
+      },
+      {
+        "id": 23,
+        "name": "Teamcity",
+        "category": "tools",
+        "level": "Orta"
+      }
+    ],
+    "languages": [
+      {
+        "id": 1,
+        "name": "Türkçe",
+        "level": "Ana Dil"
+      },
+      {
+        "id": 2,
+        "name": "İngilizce",
+        "level": "İleri (C1)"
+      }
+    ],
+    "certifications": []
+  }
+}
