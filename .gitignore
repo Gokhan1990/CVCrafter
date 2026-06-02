@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Debug / screenshots
+debug*.js
+debug*.cjs
+debug*.mjs
+test*.cjs
+screenshot*.png
+screen*.png
+debug*.png
+
+# Analysis cache
+analysis/cache/
+analysis/result.json
+
+# Uploads
+uploads/*.pdf
