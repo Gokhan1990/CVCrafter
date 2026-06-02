@@ -88,6 +88,21 @@ app.post('/api/save-analysis', (req, res) => {
   res.json({ success: true, cached: !!hash });
 });
 
+app.post('/api/save-cv', (req, res) => {
+  const cvPath = path.join(analysisDir, 'cv-save.json');
+  fs.writeFileSync(cvPath, JSON.stringify(req.body, null, 2));
+  res.json({ success: true });
+});
+
+app.get('/api/save-cv', (req, res) => {
+  const cvPath = path.join(analysisDir, 'cv-save.json');
+  if (fs.existsSync(cvPath)) {
+    const data = JSON.parse(fs.readFileSync(cvPath, 'utf-8'));
+    return res.json(data);
+  }
+  res.json({});
+});
+
 app.post('/api/verify-hash', (req, res) => {
   const { hash } = req.body;
   const cachedPath = path.join(cacheDir, `${hash}.json`);

@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+
+const STORAGE_KEY = 'cv-app-data';
 
 const defaultCV = {
   personal: {
@@ -32,11 +34,39 @@ const defaultCV = {
   fontSize: 'medium',
 };
 
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return null;
+}
+
 const CVContext = createContext();
 
 export function CVProvider({ children }) {
-  const [cvData, setCVData] = useState(defaultCV);
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const saved = loadSaved();
+  const [cvData, setCVData] = useState(saved || defaultCV);
+  const [uploadedFile, setUploadedFile] = useState(saved?.__uploadedFile || null);
+
+  // Auto-save to localStorage on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...cvData, __uploadedFile: uploadedFile }));
+    } catch {}
+  }, [cvData, uploadedFile]);
+
+  const saveCV = useCallback(async () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...cvData, __uploadedFile: uploadedFile }));
+      await fetch('/api/save-cv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cvData, uploadedFile }),
+      });
+      return true;
+    } catch { return false; }
+  }, [cvData, uploadedFile]);
 
   const updatePersonal = useCallback((field, value) => {
     setCVData(prev => ({ ...prev, personal: { ...prev.personal, [field]: value } }));
@@ -167,6 +197,8 @@ export function CVProvider({ children }) {
   const resetCV = useCallback(() => {
     setCVData(defaultCV);
     setUploadedFile(null);
+    localStorage.removeItem(STORAGE_KEY);
+    try { fetch('/api/save-cv', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }); } catch {}
   }, []);
 
   return (
@@ -181,7 +213,7 @@ export function CVProvider({ children }) {
       updateLanguage, addLanguage, removeLanguage,
       updateCertification, addCertification, removeCertification,
       updateSetting,
-      resetCV,
+      resetCV, saveCV,
     }}>
       {children}
     </CVContext.Provider>

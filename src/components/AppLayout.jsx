@@ -35,10 +35,11 @@ const templates = { modern: ModernTemplate, classic: ClassicTemplate, ats: ATSTe
 const templateNames = { premium: 'Premium', modern: 'Modern', classic: 'Klasik', ats: 'ATS Dostu' };
 
 export default function AppLayout() {
-  const { cvData, uploadedFile, resetCV, updateSetting } = useCV();
+  const { cvData, uploadedFile, resetCV, updateSetting, saveCV } = useCV();
   const [activeSection, setActiveSection] = useState('import');
   const [showPdf, setShowPdf] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (uploadedFile) setShowPdf(true);
@@ -57,6 +58,13 @@ export default function AppLayout() {
     setExporting(false);
   };
 
+  const handleSave = async () => {
+    setSaving(true);
+    const ok = await saveCV();
+    if (ok) setSaving(false);
+    else { setSaving(false); alert('Kaydetme başarısız'); }
+  };
+
   const handleNavigate = (sectionId) => {
     setActiveSection(sectionId);
   };
@@ -69,6 +77,9 @@ export default function AppLayout() {
           <span className="appSubtitle">İK Uzmanı Gözüyle CV Danışmanlığı</span>
         </div>
         <div className="appHeaderActions">
+          <button className="btnExport" onClick={handleSave} style={{ background: '#059669' }} disabled={saving}>
+            {saving ? '⏳' : '💾 Kaydet'}
+          </button>
           <button className="btnExport" onClick={handleExport} disabled={exporting}>
             {exporting ? '⏳ Hazırlanıyor...' : '📄 PDF İndir'}
           </button>
