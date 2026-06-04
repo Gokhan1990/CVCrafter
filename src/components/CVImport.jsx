@@ -91,23 +91,30 @@ async function extractPhoto(pdfUrl) {
 }
 
 export default function CVImport({ onNavigate }) {
-  const { cvData, setCVData, uploadedFile, setUploadedFile } = useCV();
+  const { cvData, setCVData, uploadedFile, setUploadedFile, cvAnalysis, setCVAnalysis } = useCV();
   const [step, setStep] = useState('upload');
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [analysis, setAnalysis] = useState(null);
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
+    if (cvAnalysis) {
+      setStep('results');
+      return;
+    }
+    if (!uploadedFile) {
+      setStep('upload');
+      setFile(null);
+      return;
+    }
     fetch('/api/analysis').then(r => r.json()).then(data => {
       if (data.status !== 'waiting' && data.uploadedFile) {
-        setAnalysis(data);
+        setCVAnalysis(data);
         setUploadedFile(data.uploadedFile);
         setStep('results');
-        applyParsedData(data);
       }
     }).catch(() => {});
-  }, []);
+  }, [uploadedFile, cvAnalysis]);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -147,41 +154,50 @@ export default function CVImport({ onNavigate }) {
         if (data.status !== 'waiting') {
           clearInterval(interval);
           setChecking(false);
-          setAnalysis(data);
+          setCVAnalysis(data);
           setStep('results');
-          applyParsedData(data);
         }
       } catch {}
     }, 2000);
   }, []);
 
-  const applyParsedData = useCallback((data) => {
+  const applyParsedData = useCallback(async (data) => {
     if (!data?.parsed) return;
     const p = data.parsed;
+
+    const addIds = (arr) => arr?.map(item => ({ ...item, id: item.id || Date.now() + Math.random() })) || [];
+
     setCVData(prev => ({
       ...prev,
       personal: { ...prev.personal, ...p.personal },
       summary: p.summary || prev.summary,
-      experience: p.experience?.length > 0 ? p.experience : prev.experience,
-      education: p.education?.length > 0 ? p.education : prev.education,
-      skills: p.skills?.length > 0 ? p.skills : prev.skills,
-      languages: p.languages?.length > 0 ? p.languages : prev.languages,
-      certifications: p.certifications?.length > 0 ? p.certifications : prev.certifications,
+      experience: p.experience?.length > 0 ? addIds(p.experience) : prev.experience,
+      education: p.education?.length > 0 ? addIds(p.education) : prev.education,
+      skills: p.skills?.length > 0 ? addIds(p.skills) : prev.skills,
+      languages: p.languages?.length > 0 ? addIds(p.languages) : prev.languages,
+      certifications: p.certifications?.length > 0 ? addIds(p.certifications) : prev.certifications,
     }));
     if (data.templateRec?.id) {
       setCVData(prev => ({ ...prev, template: data.templateRec.id }));
     }
+
     const file = data.uploadedFile || uploadedFile;
     if (file) {
-      extractPhoto(`/uploads/${file}`).then(url => {
-        if (url) setCVData(prev => ({ ...prev, personal: { ...prev.personal, photo: url } }));
-      });
+      try {
+        const photoUrl = await extractPhoto(`/uploads/${file}`);
+        if (photoUrl) {
+          setCVData(prev => ({
+            ...prev,
+            personal: { ...prev.personal, photo: photoUrl }
+          }));
+        }
+      } catch {}
     }
   }, [setCVData, uploadedFile]);
 
   const applyToForm = () => {
-    applyParsedData(analysis);
-    if (onNavigate) onNavigate('preview');
+    applyParsedData(cvAnalysis);
+    if (onNavigate) onNavigate('personal');
   };
 
   return (
@@ -240,7 +256,7 @@ export default function CVImport({ onNavigate }) {
         </div>
       )}
 
-      {step === 'results' && analysis && (
+      {step === 'results' && cvAnalysis && (
         <div>
           {uploadedFile && (
             <details style={{ marginBottom: 12 }}>
@@ -252,25 +268,25 @@ export default function CVImport({ onNavigate }) {
           )}
           <div className="card" style={{
             textAlign: 'center',
-            background: analysis.score >= 75 ? 'linear-gradient(135deg, #059669, #10b981)' : 'linear-gradient(135deg, #667eea, #764ba2)',
+            background: cvAnalysis.score >= 75 ? 'linear-gradient(135deg, #059669, #10b981)' : 'linear-gradient(135deg, #667eea, #764ba2)',
             color: 'white', marginBottom: 12
           }}>
-            <div style={{ fontSize: 48, fontWeight: 700 }}>{analysis.score}/100</div>
-            <div style={{ fontSize: 18, fontWeight: 600, opacity: 0.9 }}>{analysis.grade}</div>
-            <div style={{ fontSize: 13, opacity: 0.7 }}>{analysis.passed}/{analysis.total} kriter karşılanmış</div>
+            <div style={{ fontSize: 48, fontWeight: 700 }}>{cvAnalysis.score}/100</div>
+            <div style={{ fontSize: 18, fontWeight: 600, opacity: 0.9 }}>{cvAnalysis.grade}</div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>{cvAnalysis.passed}/{cvAnalysis.total} kriter karşılanmış</div>
           </div>
 
-          {analysis.summary && (
+          {cvAnalysis.summary && (
             <div className="card" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', marginBottom: 12 }}>
               <h4 style={{ fontSize: 14, color: '#065f46', marginBottom: 4 }}>📋 Özet Değerlendirme</h4>
-              <p style={{ fontSize: 13, color: '#065f46', margin: 0 }}>{analysis.summary}</p>
+              <p style={{ fontSize: 13, color: '#065f46', margin: 0 }}>{cvAnalysis.summary}</p>
             </div>
           )}
 
-          {analysis.advice?.length > 0 && (
+          {cvAnalysis.advice?.length > 0 && (
             <div className="card" style={{ background: '#eff6ff', border: '1px solid #bfdbfe', marginBottom: 12 }}>
               <h4 style={{ fontSize: 14, color: '#1e40af', marginBottom: 8 }}>🧑‍💼 İK Uzmanı Yorumum</h4>
-              {analysis.advice.map((a, i) => (
+              {cvAnalysis.advice.map((a, i) => (
                 <div key={i} style={{ marginBottom: 6, padding: '6px 8px', background: 'white', borderRadius: 'var(--radius)', fontSize: 13 }}>
                   {a}
                 </div>
@@ -278,10 +294,10 @@ export default function CVImport({ onNavigate }) {
             </div>
           )}
 
-          {analysis.failed?.length > 0 && (
+          {cvAnalysis.failed?.length > 0 && (
             <div className="card" style={{ background: '#fef2f2', border: '1px solid #fecaca', marginBottom: 12 }}>
               <h4 style={{ fontSize: 14, color: '#dc2626', marginBottom: 8 }}>Geliştirilmesi Gereken Alanlar</h4>
-              {analysis.failed.map((c, i) => (
+              {cvAnalysis.failed.map((c, i) => (
                 <div key={i} style={{ marginBottom: 6, padding: '6px 8px', background: 'white', borderRadius: 'var(--radius)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: 13, fontWeight: 500, color: '#dc2626' }}>✗ {c.label}</span>
@@ -293,12 +309,12 @@ export default function CVImport({ onNavigate }) {
             </div>
           )}
 
-          {analysis.templateRec && (
+          {cvAnalysis.templateRec && (
             <div className="card" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', marginBottom: 12 }}>
               <h4 style={{ fontSize: 14, color: '#166534', marginBottom: 8 }}>🎨 Önerilen Şablon</h4>
-              <div style={{ fontSize: 20, marginBottom: 4 }}>{analysis.templateRec.icon}</div>
-              <strong style={{ fontSize: 14 }}>{analysis.templateRec.name}</strong>
-              <p style={{ fontSize: 13, color: 'var(--textSecondary)', margin: '4px 0' }}>{analysis.templateRec.reason}</p>
+              <div style={{ fontSize: 20, marginBottom: 4 }}>{cvAnalysis.templateRec.icon}</div>
+              <strong style={{ fontSize: 14 }}>{cvAnalysis.templateRec.name}</strong>
+              <p style={{ fontSize: 13, color: 'var(--textSecondary)', margin: '4px 0' }}>{cvAnalysis.templateRec.reason}</p>
             </div>
           )}
 
@@ -306,7 +322,7 @@ export default function CVImport({ onNavigate }) {
             <button className="btnExport" onClick={applyToForm} style={{ flex: 1 }}>
               Veriyi Şablona Uygula
             </button>
-            <button className="btnExport" onClick={() => { setStep('upload'); setFile(null); setAnalysis(null); }} style={{ flex: 1, background: '#dc2626' }}>
+            <button className="btnExport" onClick={() => { setStep('upload'); setFile(null); setCVAnalysis(null); }} style={{ flex: 1, background: '#dc2626' }}>
               Yeni CV Yükle
             </button>
             {onNavigate && (

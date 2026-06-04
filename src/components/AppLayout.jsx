@@ -13,9 +13,13 @@ import Summary from './Summary';
 import HRAnalysis from './HRAnalysis';
 import Settings from './Settings';
 import ModernTemplate from '../templates/ModernTemplate';
-import ClassicTemplate from '../templates/ClassicTemplate';
-import ATSTemplate from '../templates/ATSTemplate';
 import PremiumTemplate from '../templates/PremiumTemplate';
+import NovaTechTemplate from '../templates/NovaTechTemplate';
+import JakesResumeTemplate from '../templates/JakesResumeTemplate';
+import DeedyResumeTemplate from '../templates/DeedyResumeTemplate';
+import DeveloperTemplate from '../templates/DeveloperTemplate';
+import ElegantTemplate from '../templates/ElegantTemplate';
+import TechResumeTemplate from '../templates/TechResumeTemplate';
 import { exportPDF } from '../utils/pdfExport';
 
 const sections = [
@@ -31,8 +35,26 @@ const sections = [
   { id: 'settings', label: '⚙️ Şablon & Ayarlar', comp: Settings },
 ];
 
-const templates = { modern: ModernTemplate, classic: ClassicTemplate, ats: ATSTemplate, premium: PremiumTemplate };
-const templateNames = { premium: 'Premium', modern: 'Modern', classic: 'Klasik', ats: 'ATS Dostu' };
+const templates = {
+  premium: PremiumTemplate,
+  modern: ModernTemplate,
+  novaTech: NovaTechTemplate,
+  jakes: JakesResumeTemplate,
+  deedy: DeedyResumeTemplate,
+  developer: DeveloperTemplate,
+  elegant: ElegantTemplate,
+  tech: TechResumeTemplate,
+};
+const templateNames = {
+  premium: 'Premium',
+  modern: 'Modern',
+  novaTech: 'NovaTech',
+  jakes: "Jake's Resume",
+  deedy: 'Deedy Resume',
+  developer: 'Developer',
+  elegant: 'Elegant',
+  tech: 'Tech Resume',
+};
 
 export default function AppLayout() {
   const { cvData, uploadedFile, resetCV, updateSetting, saveCV } = useCV();
@@ -43,7 +65,7 @@ export default function AppLayout() {
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    if (uploadedFile) setShowPdf(true);
+    setShowPdf(!!uploadedFile);
   }, [uploadedFile]);
 
   useEffect(() => {
@@ -145,10 +167,9 @@ export default function AppLayout() {
                 onChange={e => { updateSetting('template', e.target.value); setShowPdf(false); }}
                 style={{ fontSize: 12, padding: '2px 8px', border: '1px solid var(--border)', borderRadius: 4, background: 'white' }}
               >
-                <option value="premium">Premium</option>
-                <option value="modern">Modern</option>
-                <option value="classic">Klasik</option>
-                <option value="ats">ATS Dostu</option>
+                {Object.entries(templateNames).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
               </select>
             </div>
           </div>

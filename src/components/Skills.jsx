@@ -1,7 +1,7 @@
 import { useCV } from '../context/CVContext';
 
 const categories = [
-  { id: 'languages', label: 'Programlama Dilleri' },
+  { id: 'languages', label: 'Diller & Teknolojiler' },
   { id: 'frameworks', label: 'Framework & Kütüphaneler' },
   { id: 'tools', label: 'Araçlar & Platformlar' },
   { id: 'databases', label: 'Veritabanları' },

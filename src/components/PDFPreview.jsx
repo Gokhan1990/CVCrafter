@@ -6,10 +6,19 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export default function PDFPreview({ fileUrl, onTextExtracted }) {
   const canvasRef = useRef(null);
+  const renderTaskRef = useRef(null);
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [pdf, setPdf] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (renderTaskRef.current) {
+        try { renderTaskRef.current.cancel(); } catch {}
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!fileUrl) {
@@ -28,7 +37,7 @@ export default function PDFPreview({ fileUrl, onTextExtracted }) {
       const pdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
       setPdf(pdfDoc);
       setNumPages(pdfDoc.numPages);
-      renderPage(pdfDoc, 1);
+      await renderPage(pdfDoc, 1);
       setLoading(false);
 
       let fullText = '';
@@ -39,20 +48,27 @@ export default function PDFPreview({ fileUrl, onTextExtracted }) {
       }
       if (onTextExtracted) onTextExtracted(fullText);
     } catch (err) {
-      setLoading(false);
+      if (err?.name !== 'RenderingCancelledException') setLoading(false);
     }
   };
 
   const renderPage = async (pdfDoc, pageNum) => {
     try {
+      if (renderTaskRef.current) {
+        try { renderTaskRef.current.cancel(); } catch {}
+      }
       const page = await pdfDoc.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.5 });
+      const rotation = page.rotate || 0;
+      const viewport = page.getViewport({ scale: 1.5, rotation });
       const canvas = canvasRef.current;
       if (!canvas) return;
       canvas.height = viewport.height;
       canvas.width = viewport.width;
       const ctx = canvas.getContext('2d');
-      await page.render({ canvasContext: ctx, viewport }).promise;
+      const renderTask = page.render({ canvasContext: ctx, viewport });
+      renderTaskRef.current = renderTask;
+      await renderTask.promise;
+      renderTaskRef.current = null;
     } catch (err) {}
   };
 

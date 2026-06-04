@@ -23,21 +23,35 @@ dist-ssr
 *.sln
 *.sw?
 
-# Debug / screenshots
-debug*.js
-debug*.cjs
-debug*.mjs
-test*.cjs
-screenshot*.png
-screen*.png
-debug*.png
+# Environment
+.env
 
-# Analysis cache
-analysis/cache/
-analysis/result.json
-analysis/cv-save.json
-analysis/pending.txt
-analysis/last-upload.txt
+# Session memory
+Memory.md
 
-# Uploads
-uploads/*.pdf
+# gstack
+.gstack/
+
+# Debug / screenshots / test files
+debug*
+screenshot*
+screen-*
+test*
+tmp_*
+
+# Images & binaries generated during dev
+*.png
+*.jpg
+*.jpeg
+*.b64
+
+# Server helpers & one-off scripts
+server/_*
+server/analyze.cjs
+server/check-pending.cjs
+
+# Analysis (AI output, cache, save)
+analysis/
+
+# Uploads (user CV PDFs + extracted text)
+uploads/

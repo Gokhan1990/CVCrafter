@@ -1,3 +1,5 @@
+import { formatDate } from '../utils/dateFormat';
+
 const levelLabel = { 'Başlangıç': 'Temel', 'Orta': 'Orta', 'İleri': 'İleri', 'Uzman': 'Uzman' };
 const levelPct = { 'Başlangıç': 30, 'Orta': 50, 'İleri': 75, 'Uzman': 95 };
 
@@ -27,6 +29,16 @@ function SectionTitle({ icon, title }) {
 
 export default function PremiumTemplate({ data }) {
   const { personal, summary, experience, education, skills, languages, certifications } = data;
+  const lang = data.language || 'tr';
+
+  const sectionTitles = {
+    summary: lang === 'tr' ? 'Profesyonel Özet' : 'Professional Summary',
+    experience: lang === 'tr' ? 'Deneyim' : 'Experience',
+    education: lang === 'tr' ? 'Eğitim' : 'Education',
+    languages: lang === 'tr' ? 'Diller' : 'Languages',
+    certifications: lang === 'tr' ? 'Sertifikalar' : 'Certifications',
+    skills: 'Yetenekler',
+  };
 
   return (
     <div className="premiumTemplate">
@@ -57,19 +69,19 @@ export default function PremiumTemplate({ data }) {
         <div className="premiumMain">
           {summary && (
             <section className="premiumSection" data-section="summary">
-              <SectionTitle icon="📝" title="Profesyonel Özet" />
+              <SectionTitle icon="📝" title={sectionTitles.summary} />
               <p className="premiumText">{summary}</p>
             </section>
           )}
 
           {experience.some(e => e.company) && (
             <section className="premiumSection" data-section="experience">
-              <SectionTitle icon="💼" title="Deneyim" />
+              <SectionTitle icon="💼" title={sectionTitles.experience} />
               {experience.filter(e => e.company).map((exp, idx) => (
                 <div key={exp.id} className="premiumItem" data-card="experience" data-card-index={idx}>
                   <div className="premiumItemHead">
                     <strong className="premiumItemPosition">{exp.position}</strong>
-                    <span className="premiumItemDate">{exp.startDate} — {exp.current ? 'Devam' : exp.endDate}</span>
+                    <span className="premiumItemDate">{formatDate(exp.startDate, lang)} - {exp.current ? (lang === 'tr' ? 'Devam Ediyor' : 'Present') : formatDate(exp.endDate, lang)}</span>
                   </div>
                   <em className="premiumItemCompany">{exp.company}</em>
                   {exp.description && <p className="premiumText">{exp.description}</p>}
@@ -80,12 +92,12 @@ export default function PremiumTemplate({ data }) {
 
           {education.some(e => e.school) && (
             <section className="premiumSection" data-section="education">
-              <SectionTitle icon="🎓" title="Eğitim" />
+              <SectionTitle icon="🎓" title={sectionTitles.education} />
               {education.filter(e => e.school).map((edu, idx) => (
                 <div key={edu.id} className="premiumItem" data-card="education" data-card-index={idx}>
                   <div className="premiumItemHead">
                     <strong className="premiumItemPosition">{edu.degree} — {edu.field}</strong>
-                    <span className="premiumItemDate">{edu.startDate} — {edu.endDate}</span>
+                    <span className="premiumItemDate">{formatDate(edu.startDate, lang)} - {formatDate(edu.endDate, lang)}</span>
                   </div>
                   <em className="premiumItemCompany">{edu.school}</em>
                   {edu.gpa && <p className="premiumText">GPA: {edu.gpa}</p>}
@@ -100,7 +112,7 @@ export default function PremiumTemplate({ data }) {
             const allSkills = skills.filter(s => s.name);
             if (allSkills.length === 0) return null;
             let skillGlobalIdx = 0;
-            const catLabels = { languages: 'Programlama Dilleri', frameworks: 'Framework & Kütüphaneler', tools: 'Araçlar & Platformlar', databases: 'Veritabanları', other: 'Diğer' };
+            const catLabels = { languages: 'Diller & Teknolojiler', frameworks: 'Framework & Kütüphaneler', tools: 'Araçlar & Platformlar', databases: 'Veritabanları', other: 'Diğer' };
             return (
               <section className="premiumSection premiumSectionSide" data-section="skills">
                 <SectionTitle icon="🔧" title="Yetenekler" />
@@ -126,7 +138,7 @@ export default function PremiumTemplate({ data }) {
 
           {languages.some(l => l.name) && (
             <section className="premiumSection premiumSectionSide" data-section="languages">
-              <SectionTitle icon="🌐" title="Diller" />
+              <SectionTitle icon="🌐" title={sectionTitles.languages} />
               <div className="premiumLangList">
                 {languages.filter(l => l.name).map((lang, idx) => (
                   <div key={lang.id} className="premiumLangItem" data-card="language" data-card-index={idx}>
@@ -145,12 +157,12 @@ export default function PremiumTemplate({ data }) {
 
           {certifications.some(c => c.name) && (
             <section className="premiumSection premiumSectionSide" data-section="certifications">
-              <SectionTitle icon="📜" title="Sertifikalar" />
+              <SectionTitle icon="📜" title={sectionTitles.certifications} />
               <div className="premiumCertList">
                 {certifications.filter(c => c.name).map((cert, idx) => (
                   <div key={cert.id} className="premiumCertItem" data-card="certification" data-card-index={idx}>
                     <strong>{cert.name}</strong>
-                    <span className="premiumCertMeta">{cert.issuer}{cert.date ? ` · ${cert.date}` : ''}</span>
+                    <span className="premiumCertMeta">{cert.issuer}{cert.date ? ` · ${formatDate(cert.date, lang)}` : ''}</span>
                   </div>
                 ))}
               </div>

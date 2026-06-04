@@ -1,7 +1,10 @@
+import { formatDate } from '../utils/dateFormat';
+
 export default function ModernTemplate({ data }) {
   const { personal, summary, experience, education, skills, languages, certifications } = data;
   const color = data.primaryColor || '#2563eb';
   const fontSize = data.fontSize === 'small' ? '12px' : data.fontSize === 'large' ? '16px' : '14px';
+  const lang = data.language || 'tr';
 
   return (
     <div className="cvTemplate" style={{ '--color': color, fontSize }}>
@@ -44,7 +47,7 @@ export default function ModernTemplate({ data }) {
                 <div key={exp.id} className="modernItem">
                   <div className="modernItemHeader">
                     <strong>{exp.position}</strong>
-                    <span className="modernDate">{exp.startDate} - {exp.current ? 'Devam' : exp.endDate}</span>
+                    <span className="modernDate"> | {formatDate(exp.startDate, lang)} - {exp.current ? (lang === 'tr' ? 'Devam Ediyor' : 'Present') : formatDate(exp.endDate, lang)}</span>
                   </div>
                   <em>{exp.company}</em>
                   <p>{exp.description}</p>
@@ -60,7 +63,7 @@ export default function ModernTemplate({ data }) {
                 <div key={edu.id} className="modernItem">
                   <div className="modernItemHeader">
                     <strong>{edu.degree} - {edu.field}</strong>
-                    <span className="modernDate">{edu.startDate} - {edu.endDate}</span>
+                    <span className="modernDate"> | {formatDate(edu.startDate, lang)} - {formatDate(edu.endDate, lang)}</span>
                   </div>
                   <em>{edu.school}</em>
                   {edu.gpa && <p>GPA: {edu.gpa}</p>}
@@ -76,7 +79,7 @@ export default function ModernTemplate({ data }) {
                 <div key={cert.id} className="modernItem">
                   <strong>{cert.name}</strong>
                   <em>{cert.issuer}</em>
-                  {cert.date && <span className="modernDate">{cert.date}</span>}
+                  {cert.date && <span className="modernDate">{formatDate(cert.date, lang)}</span>}
                 </div>
               ))}
             </section>
@@ -90,7 +93,7 @@ export default function ModernTemplate({ data }) {
               {['languages','frameworks','tools','databases','other'].map(cat => {
                 const items = skills.filter(s => s.category === cat && s.name);
                 if (items.length === 0) return null;
-                const catLabels = { languages: 'Diller', frameworks: 'Framework', tools: 'Araçlar', databases: 'DB', other: 'Diğer' };
+                const catLabels = { languages: 'Diller & Teknolojiler', frameworks: 'Framework & Kütüphaneler', tools: 'Araçlar & Platformlar', databases: 'Veritabanları', other: 'Diğer' };
                 return (
                   <div key={cat} style={{ marginBottom: 10 }}>
                     <strong style={{ fontSize: 12, color: 'var(--textSecondary)' }}>{catLabels[cat]}</strong>

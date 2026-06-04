@@ -2,10 +2,21 @@ import { useState } from 'react';
 import { useCV } from '../context/CVContext';
 
 const availableTemplates = [
-  { id: 'premium', name: 'Premium', desc: 'Şık, tek sütunlu, modern tasarım — en yüksek kalite' },
+  { id: 'premium', name: 'Premium ⭐9.0', desc: 'Şık, tek sütunlu, progress bar — en yüksek kalite' },
+  { id: 'premiumMinimal', name: 'Premium Minimal', desc: 'Premium\'ın sade versiyonu, daha az yoğun' },
   { id: 'modern', name: 'Modern', desc: 'Renkli, yan panel, görsel ağırlıklı' },
   { id: 'classic', name: 'Klasik', desc: 'Dengeli, iki sütunlu, profesyonel' },
-  { id: 'ats', name: 'ATS Dostu', desc: 'Sade, siyah-beyaz, sistemler tarafından okunabilir — İK önerisi' },
+  { id: 'ats', name: 'ATS Dostu', desc: 'Sade, siyah-beyaz, sistemler tarafından okunabilir' },
+  { id: 'pragmatic', name: 'Pragmatic Engineer ⭐9.5', desc: 'Tek sütun, ATS canavarı — 6.500+ indirme, FAANG geri dönüşü kanıtlanmış' },
+  { id: 'beamjobs', name: 'BeamJobs Harvard ⭐9.0', desc: 'Ters kronolojik, metrik odaklı, ATS 95%+ başarı' },
+  { id: 'reziJake', name: 'Rezi Jake\'s ⭐9.0', desc: 'Tek sütun, yüksek yoğunluk, Overleaf\'ten HTML\'e' },
+  { id: 'faangSingle', name: 'FAANG Single ⭐8.5', desc: '1 sayfa, action+result+metric, recruitler 6 saniyede tarar' },
+  { id: 'minimalCanva', name: 'Minimal Canva ⭐8.0', desc: 'İnce çizgiler, bol beyaz alan, minimalist şıklık' },
+  { id: 'dualColumn', name: 'Dual Column ⭐8.0', desc: 'İki sütunlu, sol panel iletişim+yetenek' },
+  { id: 'googleDocsATS', name: 'Google Docs ATS ⭐8.5', desc: '97.8% ATS başarı, Calibri 11pt, en güvenilir format' },
+  { id: 'enhancvModern', name: 'Enhancv Modern ⭐7.5', desc: 'Gradient header, progress bar, görsel ağırlıklı' },
+  { id: 'sleekTech', name: 'Sleek Tech ⭐8.0', desc: 'Blue accent, temiz hizalama, border-left deneyim' },
+  { id: 'standardParker', name: 'Standard Parker ⭐8.5', desc: 'Pragmatic Engineer portu, web-based, trackable' },
 ];
 
 const fontSizes = [
@@ -60,6 +71,13 @@ export default function Settings() {
           <label>Yazı Boyutu</label>
           <select value={cvData.fontSize} onChange={e => updateSetting('fontSize', e.target.value)}>
             {fontSizes.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+          </select>
+        </div>
+        <div className="field">
+          <label>Dil / Language</label>
+          <select value={cvData.language || 'tr'} onChange={e => updateSetting('language', e.target.value)}>
+            <option value="tr">Türkçe</option>
+            <option value="en">English</option>
           </select>
         </div>
       </div>

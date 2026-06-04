@@ -16,63 +16,38 @@ const defaultCV = {
     website: '',
   },
   summary: '',
-  experience: [
-    { id: 1, company: '', position: '', startDate: '', endDate: '', description: '', current: false },
-  ],
-  education: [
-    { id: 1, school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '' },
-  ],
+  experience: [],
+  education: [],
   skills: [],
-  languages: [
-    { id: 1, name: '', level: 'Orta' },
-  ],
-  certifications: [
-    { id: 1, name: '', issuer: '', date: '' },
-  ],
+  languages: [],
+  certifications: [],
   template: 'premium',
   primaryColor: '#2563eb',
   fontSize: 'medium',
+  language: 'tr',
 };
-
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return null;
-}
 
 const CVContext = createContext();
 
 export function CVProvider({ children }) {
-  const saved = loadSaved();
-  const [cvData, setCVData] = useState(saved || defaultCV);
-  const [uploadedFile, setUploadedFile] = useState(saved?.__uploadedFile || null);
-
-  // Load from backend on mount (overrides localStorage)
-  useEffect(() => {
-    fetch('/api/save-cv').then(r => r.json()).then(data => {
-      if (data?.cvData) {
-        setCVData(data.cvData);
-        if (data.uploadedFile) setUploadedFile(data.uploadedFile);
-      }
-    }).catch(() => {});
-  }, []);
+  const [cvData, setCVData] = useState(defaultCV);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [cvAnalysis, setCVAnalysis] = useState(null);
 
   // Auto-save to localStorage on every change
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...cvData, __uploadedFile: uploadedFile }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cvData));
     } catch {}
-  }, [cvData, uploadedFile]);
+  }, [cvData]);
 
   const saveCV = useCallback(async () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...cvData, __uploadedFile: uploadedFile }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cvData));
       await fetch('/api/save-cv', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cvData, uploadedFile }),
+        body: JSON.stringify({ cvData }),
       });
       return true;
     } catch { return false; }
@@ -207,14 +182,17 @@ export function CVProvider({ children }) {
   const resetCV = useCallback(() => {
     setCVData(defaultCV);
     setUploadedFile(null);
+    setCVAnalysis(null);
     localStorage.removeItem(STORAGE_KEY);
     try { fetch('/api/save-cv', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }); } catch {}
+    try { fetch('/api/upload', { method: 'DELETE' }); } catch {}
   }, []);
 
   return (
     <CVContext.Provider value={{
       cvData, setCVData,
       uploadedFile, setUploadedFile,
+      cvAnalysis, setCVAnalysis,
       updatePersonal,
       updateSummary,
       updateExperience, addExperience, removeExperience,

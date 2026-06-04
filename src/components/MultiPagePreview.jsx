@@ -1,24 +1,24 @@
 import { useMemo } from 'react';
 
 const PAGE_PX = 297 * 3.78;
-const PAGE_PAD_T = 60;
+const PAGE_PAD_T = 12;
 const viewH = PAGE_PX - PAGE_PAD_T * 2;
-const BUF = 60;
+const BUF = 12;
 const CAT_ORDER = ['languages', 'frameworks', 'tools', 'databases', 'other'];
 
 function est(data) {
   const e = x => x || 0;
-  const hdrH = 210;
-  const secH = 64;
+  const hdrH = 150;
+  const secH = 50;
   const av = viewH - hdrH - BUF;
 
-  const sumH = data.summary ? secH + 130 : 0;
+  const sumH = data.summary ? secH + 95 : 0;
 
   const expHs = (data.experience || []).map(exp => {
-    const lines = Math.ceil(e(exp.description || '').length / 75) || 1;
-    return secH + 55 + lines * 23;
+    const lines = Math.ceil(e(exp.description || '').length / 72) || 1;
+    return secH + 55 + lines * 28;
   });
-  const eduHs = (data.education || []).map(() => secH + 65);
+  const eduHs = (data.education || []).map(() => secH + 55);
 
   const withName = (arr) => (arr || []).filter(x => x && x.name);
   const allSkills = withName(data.skills);
@@ -27,14 +27,14 @@ function est(data) {
   const skGroups = CAT_ORDER.map((cat, gi) => {
     const items = allSkills.filter(s => s.category === cat);
     if (items.length === 0) return null;
-    const totalH = 28 + items.length * 32; // 28 = category label + group margin, 32 per skill
+    const totalH = 22 + items.length * 25; // 22 = category label + group margin, 25 per skill
     return { type: 'skill-group', h: totalH, gi, cat, indices: items.map(s => data.skills.indexOf(s)).filter(i => i >= 0) };
   }).filter(Boolean);
 
   const langHs = withName(data.languages).map(() => 55 + 8);
   const certHs = withName(data.certifications).map(() => 44 + 8);
 
-  const skGroupOverhead = 28;
+  const skGroupOverhead = 22;
 
   const mainItems = [];
   if (data.summary) mainItems.push({ type: 'summary', h: sumH });
@@ -83,7 +83,8 @@ function est(data) {
 
     while (si < sideItems.length) {
       const item = sideItems[si];
-      if (sh + item.h > effectiveAv && anyS) break;
+      const sideAvail = anyM ? Math.min(mh, effectiveAv * 0.65) : effectiveAv;
+      if (sh + item.h > sideAvail && anyS) break;
       sh += item.h; anyS = true; ps.push(item); si++;
     }
     if (ps.length === 0 && si < sideItems.length) {

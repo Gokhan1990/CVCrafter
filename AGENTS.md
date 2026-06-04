@@ -61,10 +61,9 @@ npm run build             # Production build
 
 ## AI Analiz Flow
 1. Kullanıcı frontend'den PDF yükler → backend `uploads/` dizinine kaydeder
-2. Backend `analysis/pending.txt` dosyasına filename yazar
-3. AI (ben) `analysis/pending.txt`'yi görür, PDF'i okur
-4. AI analiz sonucunu `analysis/result.json`'a yazar
-5. Frontend polling ile sonucu alır ve gösterir
+2. Backend PDF'den metin çıkarır (pdf-parse) ve DeepSeek API'ye gönderir
+3. DeepSeek analiz sonucunu doğrudan `analysis/result.json`'a yazar (senkron)
+4. Frontend polling ile sonucu alır ve gösterir
 
 ## gstack
 - Tasarım için gstack kullanılabilir
